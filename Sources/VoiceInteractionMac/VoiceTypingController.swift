@@ -20,6 +20,7 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
 
     private let modelName = "large-v3-v20240930_626MB"
     private let silenceThreshold: Float = 0.01
+    private let lowEnergyHallucinationThreshold: Float = 0.02
     private let silenceDuration: Double = 1.0
     private let minSpeechDuration: Double = 0.3
     private let maxSpeechDuration: Double = 15.0
@@ -241,17 +242,18 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
 
     private func flushSegment() {
         let audio = segmentBuffer
+        let segmentRMS = rootMeanSquare(audio)
         resetSegmentationState()
         guard !audio.isEmpty else {
             return
         }
 
         transcriptionQueue.async { [weak self] in
-            self?.transcribe(audio: audio)
+            self?.transcribe(audio: audio, segmentRMS: segmentRMS)
         }
     }
 
-    private func transcribe(audio: [Float]) {
+    private func transcribe(audio: [Float], segmentRMS: Float) {
         guard let whisperKit else {
             return
         }
@@ -266,6 +268,9 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
                 guard !text.isEmpty else {
                     return
                 }
+                guard !shouldIgnoreLowEnergyTranscript(text, segmentRMS: segmentRMS) else {
+                    return
+                }
 
                 await MainActor.run {
                     self.lastTranscript = text
@@ -278,6 +283,19 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
                 }
             }
         }
+    }
+
+    private func shouldIgnoreLowEnergyTranscript(_ text: String, segmentRMS: Float) -> Bool {
+        guard segmentRMS < lowEnergyHallucinationThreshold else {
+            return false
+        }
+
+        let normalizedText = text
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingCharacters(in: .punctuationCharacters)
+
+        return normalizedText == "thank you"
     }
 
     private func resetSegmentationState() {
