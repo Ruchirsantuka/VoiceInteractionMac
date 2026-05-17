@@ -22,6 +22,21 @@ The app is built as a Swift Package executable and packaged into a signed `.app`
 - Microphone permission.
 - Accessibility permission, so the app can paste transcribed text into other applications.
 
+## Dependencies
+
+The app uses Apple platform frameworks for the macOS UI, audio capture, permissions, menu bar integration, and text insertion:
+
+- SwiftUI
+- AppKit
+- AVFoundation
+- Combine
+
+It also depends on:
+
+- [WhisperKit](https://github.com/argmaxinc/argmax-oss-swift), provided by `argmax-oss-swift`, for local speech transcription.
+
+Swift Package Manager resolves the external dependency from `Package.swift` and pins the exact version in `Package.resolved`.
+
 ## Build
 
 Build the Swift executable:
@@ -100,3 +115,7 @@ Sources/
 ## Git Ignore Policy
 
 The repository tracks source code, Swift package files, the build script, and documentation. It ignores local macOS files, SwiftPM build directories, Xcode user state, generated app bundles, archives, logs, and temporary files.
+
+## Acknowledgements
+
+Thanks to the WhisperKit and argmax-oss-swift maintainers for making local speech transcription available to Swift apps.
