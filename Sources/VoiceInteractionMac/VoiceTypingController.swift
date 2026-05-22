@@ -9,7 +9,6 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
         case stopped
         case loading
         case listening
-        case paused
     }
 
     @Published private var status: Status = .stopped
@@ -44,7 +43,14 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
 
         hotKey = GlobalHotKey(keyCode: 101) { [weak self] in
             DispatchQueue.main.async {
-                self?.togglePause()
+                guard let self else {
+                    return
+                }
+                if self.isRunning {
+                    self.stop()
+                } else {
+                    self.start()
+                }
             }
         }
         hotKey?.register()
@@ -59,13 +65,9 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
         switch status {
         case .stopped:
             return false
-        case .loading, .listening, .paused:
+        case .loading, .listening:
             return true
         }
-    }
-
-    var isPaused: Bool {
-        status == .paused
     }
 
     var statusTitle: String {
@@ -76,8 +78,6 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
             return "Loading..."
         case .listening:
             return "Listening"
-        case .paused:
-            return "Paused"
         }
     }
 
@@ -93,8 +93,6 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
             return .gray
         case .listening:
             return .green
-        case .paused:
-            return .orange
         }
     }
 
@@ -102,8 +100,6 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
         switch status {
         case .listening:
             return "waveform.circle.fill"
-        case .paused:
-            return "pause.circle.fill"
         case .loading:
             return "arrow.triangle.2.circlepath.circle.fill"
         case .stopped:
@@ -146,18 +142,6 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
         audioCapture = nil
         resetSegmentationState()
         status = .stopped
-    }
-
-    func togglePause() {
-        guard isRunning else {
-            return
-        }
-
-        if status == .paused {
-            status = .listening
-        } else if status == .listening {
-            status = .paused
-        }
     }
 
     func requestPermissions() {

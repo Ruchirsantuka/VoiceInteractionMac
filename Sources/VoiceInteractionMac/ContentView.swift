@@ -12,7 +12,7 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(controller.statusTitle)
                         .font(.headline)
-                    Text("Hotkey: F9")
+                    Text("Hotkey: F9 (start/stop)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -45,11 +45,6 @@ struct ContentView: View {
                     controller.isRunning ? controller.stop() : controller.start()
                 }
                 .keyboardShortcut(.defaultAction)
-
-                Button(controller.isPaused ? "Resume" : "Pause") {
-                    controller.togglePause()
-                }
-                .disabled(!controller.isRunning)
 
                 Spacer()
 

@@ -11,7 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItemController = StatusItemController(controller: controller)
         controlWindowController = ControlWindowController(controller: controller)
         controlWindowController?.show()
-        controller.requestPermissions()
+        controller.start()
         NSApp.activate(ignoringOtherApps: true)
     }
 }
