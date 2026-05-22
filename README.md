@@ -9,7 +9,7 @@ The app is built as a Swift Package executable and packaged into a signed `.app`
 - Local speech-to-text transcription through WhisperKit.
 - Menu bar status item with start, stop, and permission controls.
 - Floating control window showing current status and the last transcript.
-- `F9` hotkey to start or stop listening.
+- `F1` hotkey to start or stop listening.
 - Automatic text insertion into other apps through macOS Accessibility APIs.
 - Basic speech segmentation using microphone volume, silence duration, and maximum segment length.
 
@@ -81,7 +81,7 @@ Enable Voice Interaction there, then restart the app if needed.
 2. Grant microphone and Accessibility permissions when prompted.
 3. Focus any text field in another app.
 4. Speak naturally; the app transcribes each speech segment and pastes it into the focused field.
-5. Use `F9` or the Start/Stop control to toggle listening.
+5. Use `F1` or the Start/Stop control to toggle listening.
 
 ## Implementation Notes
 

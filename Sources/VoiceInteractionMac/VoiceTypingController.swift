@@ -41,7 +41,7 @@ final class VoiceTypingController: ObservableObject, @unchecked Sendable {
         accessibilityGranted = AccessibilityTyper.isTrusted(prompt: false)
         microphoneGranted = AVCaptureDevice.authorizationStatus(for: .audio) == .authorized
 
-        hotKey = GlobalHotKey(keyCode: 101) { [weak self] in
+        hotKey = GlobalHotKey(keyCode: 122) { [weak self] in
             DispatchQueue.main.async {
                 guard let self else {
                     return

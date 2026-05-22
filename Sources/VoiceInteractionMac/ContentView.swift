@@ -12,7 +12,7 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(controller.statusTitle)
                         .font(.headline)
-                    Text("Hotkey: F9 (start/stop)")
+                    Text("Hotkey: F1 (start/stop)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
